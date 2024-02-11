@@ -37,7 +37,7 @@ export const AssetInfoModal: FC<AssetInfoModalProps> = ({
 
   return (
     <Modal open={isModalOpen} footer={null} onCancel={onCancel} width={900}>
-      <Title level={4} style={{ textAlign: "center", marginBottom: "50px" }}>
+      <Title level={4} style={{ textAlign: "center", marginBottom: "20px" }}>
         Dynamics of {asset.ticker} asset indicators
       </Title>
       <LineChart width={800} height={400} data={formattedData}>
@@ -50,7 +50,7 @@ export const AssetInfoModal: FC<AssetInfoModalProps> = ({
           <Label value="Yield" offset={0} position="right" angle={-90} />
         </YAxis>
         <Tooltip />
-        <Legend />
+        <Legend verticalAlign="top" margin={{ bottom: 20 }} />
         <Line
           type="monotone"
           dataKey="price"

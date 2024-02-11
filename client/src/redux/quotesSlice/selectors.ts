@@ -11,3 +11,8 @@ export const selectQuotesByTicker = (ticker: string) =>
   createSelector(selectHistoryQuotes, (historyQuotes) =>
     historyQuotes.filter((quote: IQuote) => quote.ticker === ticker)
   );
+
+export const selectFavorites = (state: RootState) =>
+  state.quotes.favoriteQuotes;
+export const selectStopped = (state: RootState) => state.quotes.stoppedQuotes;
+export const selectDeleted = (state: RootState) => state.quotes.deletedQuotes;

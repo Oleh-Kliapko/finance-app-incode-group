@@ -2,6 +2,7 @@ import { FC, useEffect, useState, useRef } from "react";
 import { Flex, Layout, Typography, Input, ConfigProvider } from "antd";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 import { headerStyle } from "./styles";
 import { SelectAsset } from "@/components/Common";
@@ -9,7 +10,7 @@ import { AssetInfoModal } from "@/components/Modals";
 
 import { selectLastQuotes } from "@/redux/quotesSlice";
 import { IQuote } from "@/interfaces";
-import { useGetInterval, useUpdateInterval } from "@/hooks";
+import { getInterval, updateInterval } from "@/api";
 
 const { Text } = Typography;
 
@@ -18,10 +19,18 @@ export const AppHeader: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [asset, setAsset] = useState<IQuote | undefined>(undefined);
   const [newInterval, setNewInterval] = useState<number>(0);
+  const [currentInterval, setCurrentInterval] = useState<number>(0);
   const lastQuotes = useSelector(selectLastQuotes);
   const selectRef = useRef<any>(null);
 
-  const interval = useGetInterval();
+  useEffect(() => {
+    const fetchInterval = async () => {
+      const currentInterval = await getInterval();
+      setCurrentInterval(currentInterval);
+    };
+
+    fetchInterval();
+  }, []);
 
   useEffect(() => {
     if (selected && selectRef.current) {
@@ -38,8 +47,15 @@ export const AppHeader: FC = () => {
   };
 
   const handleUpdateInterval = async () => {
-    const message = await useUpdateInterval(newInterval * 1000);
-    console.log("🚀 ~ data:", message);
+    if (newInterval < 1) {
+      toast.error("New interval can not be less 1 second");
+      setNewInterval(0);
+      return;
+    }
+    const updatedIntervalData = await updateInterval(newInterval * 1000);
+    setCurrentInterval(newInterval * 1000);
+    setNewInterval(0);
+    toast.success(updatedIntervalData.message);
   };
 
   return (
@@ -53,7 +69,7 @@ export const AppHeader: FC = () => {
       />
       <Flex style={{ flexDirection: "column", width: "35%" }}>
         <Text style={{ fontSize: "16px", marginBottom: "10px" }}>
-          Indicators are updated every {interval / 1000} sec.
+          Indicators are updated every {currentInterval / 1000} sec.
         </Text>
         <ConfigProvider
           theme={{

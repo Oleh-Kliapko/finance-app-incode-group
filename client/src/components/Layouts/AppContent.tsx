@@ -4,20 +4,22 @@ import { useSelector } from "react-redux";
 
 import { QuoteCard } from "@/components/Common";
 
-import { containerStyle, wrapperStyle, titleStyle, timeStyle } from "./styles";
+import { contentStyle, wrapperStyle, titleStyle, timeStyle } from "./styles";
 import { IQuote } from "@/interfaces";
-import { selectLastQuotes } from "@/redux/quotesSlice";
+import { selectDeleted, selectLastQuotes } from "@/redux/quotesSlice";
+import { TrashIcon } from "../Icons";
 
 const { Title } = Typography;
 
 export const AppContent: FC = () => {
   const lastQuotes = useSelector(selectLastQuotes);
+  const deletedQuotes = useSelector(selectDeleted);
   const time = lastQuotes[0]
     ? new Date(lastQuotes[0]?.last_trade_time).toLocaleString()
     : "";
 
   return (
-    <Layout.Content style={containerStyle}>
+    <Layout.Content style={contentStyle}>
       <Title level={3} style={titleStyle}>
         Information on securities quotations of {lastQuotes.length} large
         companies
@@ -31,6 +33,11 @@ export const AppContent: FC = () => {
             <QuoteCard quote={quote} key={quote.ticker} />
           ))}
       </Flex>
+      {deletedQuotes.length > 0 && (
+        <div className="trash" onClick={() => {}}>
+          <TrashIcon />
+        </div>
+      )}
     </Layout.Content>
   );
 };

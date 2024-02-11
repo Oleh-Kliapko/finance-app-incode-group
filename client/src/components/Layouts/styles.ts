@@ -1,8 +1,9 @@
-export const containerStyle: React.CSSProperties = {
-  minHeight: "calc(100vh - 60px)",
+export const contentStyle: React.CSSProperties = {
+  height: "100%",
   backgroundColor: "transparent",
-  padding: "1rem",
-  paddingLeft: "2rem",
+  paddingRight: "16px",
+  paddingLeft: "32px",
+  paddingTop: "120px",
 };
 
 export const wrapperStyle: React.CSSProperties = {

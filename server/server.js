@@ -16,6 +16,11 @@ const tickers = [
   "AMZN", // Amazon
   "FB", // Facebook
   "TSLA", // Tesla
+  "EA", //Electronic Arts
+  "MA", //Mastercard
+  "DXC", //DXC Technology Co
+  "MDB", //MongoDB Inc.
+  "EPAM", //EPAM Systems
 ];
 
 function randomValue(min = 0, max = 1, precision = 0) {
@@ -88,7 +93,12 @@ app.post("/interval", (req, res) => {
     trackTickers(connectedSocket);
   }
 
-  res.status(200).json({ message: "Interval updated successfully" });
+  res.status(200).json({
+    intervalForUpdateData,
+    message: `Interval updated successfully to ${
+      intervalForUpdateData / 1000
+    } sec.`,
+  });
 });
 
 app.get("/", function (req, res) {
