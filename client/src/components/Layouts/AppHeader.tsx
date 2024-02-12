@@ -1,26 +1,33 @@
 import { FC, useEffect, useState, useRef } from "react";
-import { Flex, Layout, Typography, Input, ConfigProvider } from "antd";
+
+import { Flex, Layout, Typography, Input, ConfigProvider, Tooltip } from "antd";
 import { ClockCircleOutlined } from "@ant-design/icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 import { headerStyle } from "./styles";
 import { SelectAsset } from "@/components/Common";
-import { AssetInfoModal } from "@/components/Modals";
+import { AssetInfoModal, DeletedAssetsModal } from "@/components/Modals";
 
-import { selectLastQuotes } from "@/redux/quotesSlice";
+import {
+  restoreQuote,
+  selectDeleted,
+  selectLastQuotes,
+} from "@/redux/quotesSlice";
 import { IQuote } from "@/interfaces";
 import { getInterval, updateInterval } from "@/api";
-
-const { Text } = Typography;
+import { TrashIcon } from "../Icons";
 
 export const AppHeader: FC = () => {
-  const [selected, setSelected] = useState(false);
+  const dispatch = useDispatch();
+  const [selectedAsset, setSelectedAsset] = useState(false);
+  const [selectedTrash, setSelectedTrash] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [asset, setAsset] = useState<IQuote | undefined>(undefined);
   const [newInterval, setNewInterval] = useState<number>(0);
   const [currentInterval, setCurrentInterval] = useState<number>(0);
   const lastQuotes = useSelector(selectLastQuotes);
+  const deletedQuotes = useSelector(selectDeleted);
   const selectRef = useRef<any>(null);
 
   useEffect(() => {
@@ -33,10 +40,10 @@ export const AppHeader: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (selected && selectRef.current) {
+    if (selectedAsset && selectRef.current) {
       selectRef.current.focus();
     }
-  }, [selected]);
+  }, [selectedAsset]);
 
   const handleSelect = (value: string) => {
     setIsModalOpen(true);
@@ -58,19 +65,23 @@ export const AppHeader: FC = () => {
     toast.success(updatedIntervalData.message);
   };
 
+  const handleRestore = (ticker: string) => {
+    dispatch(restoreQuote(ticker));
+  };
+
   return (
     <Layout.Header style={headerStyle}>
       <SelectAsset
         selectRef={selectRef}
-        isOpen={selected}
+        isOpen={selectedAsset}
         onSelect={handleSelect}
-        onClick={() => setSelected((prev) => !prev)}
+        onClick={() => setSelectedAsset((prev) => !prev)}
         placeholder="select an asset to see the dynamics"
       />
       <Flex style={{ flexDirection: "column", width: "35%" }}>
-        <Text style={{ fontSize: "16px", marginBottom: "10px" }}>
+        <Typography.Text style={{ fontSize: "16px", marginBottom: "10px" }}>
           Indicators are updated every {currentInterval / 1000} sec.
-        </Text>
+        </Typography.Text>
         <ConfigProvider
           theme={{
             components: {
@@ -91,6 +102,13 @@ export const AppHeader: FC = () => {
           />
         </ConfigProvider>
       </Flex>
+      {deletedQuotes.length > 0 && (
+        <Tooltip title={`${deletedQuotes.length} asset(s) in the trash`}>
+          <Flex className="trash" onClick={() => setSelectedTrash(true)}>
+            <TrashIcon />
+          </Flex>
+        </Tooltip>
+      )}
       {asset && (
         <AssetInfoModal
           isModalOpen={isModalOpen}
@@ -98,6 +116,12 @@ export const AppHeader: FC = () => {
           asset={asset}
         />
       )}
+      <DeletedAssetsModal
+        selectedTrash={selectedTrash}
+        onClose={() => setSelectedTrash(false)}
+        deletedQuotes={deletedQuotes}
+        handleRestore={handleRestore}
+      />
     </Layout.Header>
   );
 };

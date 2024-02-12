@@ -165,7 +165,7 @@ export const QuoteCard: FC<QuoteCardProps> = ({ quote }) => {
             <Tooltip title="Switch off this asset">
               <ReloadOutlined onClick={toggleStoppedHandler} />
             </Tooltip>
-            <Tooltip title="Move to trash / Restore from cart">
+            <Tooltip title="Move to trash">
               <DeleteOutlined onClick={handleDelete} />
             </Tooltip>
           </div>

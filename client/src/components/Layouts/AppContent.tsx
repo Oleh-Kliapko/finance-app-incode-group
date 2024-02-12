@@ -7,7 +7,6 @@ import { QuoteCard } from "@/components/Common";
 import { contentStyle, wrapperStyle, titleStyle, timeStyle } from "./styles";
 import { IQuote } from "@/interfaces";
 import { selectDeleted, selectLastQuotes } from "@/redux/quotesSlice";
-import { TrashIcon } from "../Icons";
 
 const { Title } = Typography;
 
@@ -18,26 +17,30 @@ export const AppContent: FC = () => {
     ? new Date(lastQuotes[0]?.last_trade_time).toLocaleString()
     : "";
 
+  const filteredQuotes = lastQuotes.filter((quote) => {
+    for (let i = 0; i < deletedQuotes.length; i++) {
+      if (quote.ticker === deletedQuotes[i]) {
+        return false;
+      }
+    }
+    return true;
+  });
+
   return (
     <Layout.Content style={contentStyle}>
       <Title level={3} style={titleStyle}>
-        Information on securities quotations of {lastQuotes.length} large
+        Information on securities quotations of {filteredQuotes.length} large
         companies
       </Title>
       <Title level={5} style={timeStyle}>
         Last trade time: {time}
       </Title>
       <Flex style={wrapperStyle}>
-        {lastQuotes &&
-          lastQuotes.map((quote: IQuote) => (
+        {filteredQuotes &&
+          filteredQuotes.map((quote: IQuote) => (
             <QuoteCard quote={quote} key={quote.ticker} />
           ))}
       </Flex>
-      {deletedQuotes.length > 0 && (
-        <div className="trash" onClick={() => {}}>
-          <TrashIcon />
-        </div>
-      )}
     </Layout.Content>
   );
 };

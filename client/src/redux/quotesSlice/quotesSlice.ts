@@ -11,7 +11,7 @@ export interface IState {
   deletedQuotes: string[];
 }
 
-const initialState: IState = {
+export const initialState: IState = {
   lastQuotes: [],
   historyQuotes: [],
   favoriteQuotes: [],
@@ -74,7 +74,7 @@ const quotesSlice = createSlice({
       saveToLocalStorage(state.stoppedQuotes, "stop");
     },
 
-    // handle deleting quote
+    // handle deleting /restore quote
     addToDeleted: (state, { payload }: PayloadAction<string[]>) => {
       state.deletedQuotes.push(...payload);
       saveToLocalStorage(state.deletedQuotes, "delete");
@@ -83,6 +83,18 @@ const quotesSlice = createSlice({
     deleteQuote: (state, { payload }: PayloadAction<string>) => {
       state.deletedQuotes.push(payload);
       saveToLocalStorage(state.deletedQuotes, "delete");
+    },
+
+    restoreQuote: (state, { payload }: PayloadAction<string>) => {
+      const indexOfQuote = state.deletedQuotes.findIndex(
+        (quote) => quote === payload
+      );
+      if (indexOfQuote !== -1) {
+        const newDeletedQuotes = [...state.deletedQuotes];
+        newDeletedQuotes.splice(indexOfQuote, 1);
+        state.deletedQuotes = newDeletedQuotes;
+        saveToLocalStorage(newDeletedQuotes, "delete");
+      }
     },
   },
 });
@@ -96,6 +108,7 @@ export const {
   addToStopped,
   deleteQuote,
   addToDeleted,
+  restoreQuote,
 } = quotesSlice.actions;
 
 export const quotesReducer = quotesSlice.reducer;

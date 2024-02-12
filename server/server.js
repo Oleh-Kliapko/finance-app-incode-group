@@ -20,7 +20,6 @@ const tickers = [
   "MA", //Mastercard
   "DXC", //DXC Technology Co
   "MDB", //MongoDB Inc.
-  "EPAM", //EPAM Systems
 ];
 
 function randomValue(min = 0, max = 1, precision = 0) {

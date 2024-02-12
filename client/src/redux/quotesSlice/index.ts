@@ -8,6 +8,8 @@ import {
   addToStopped,
   deleteQuote,
   addToDeleted,
+  restoreQuote,
+  initialState,
 } from "./quotesSlice";
 import {
   selectLastQuotes,
@@ -19,6 +21,7 @@ import {
 } from "./selectors";
 
 export {
+  initialState,
   quotesReducer,
   addQuotes,
   updateQuotes,
@@ -28,6 +31,7 @@ export {
   addToStopped,
   deleteQuote,
   addToDeleted,
+  restoreQuote,
   selectLastQuotes,
   selectHistoryQuotes,
   selectQuotesByTicker,

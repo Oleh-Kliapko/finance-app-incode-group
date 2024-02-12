@@ -12,6 +12,13 @@ import {
   addToStopped,
   updateQuotes,
 } from "@/redux/quotesSlice";
+import { ILocalStorageItem } from "./interfaces";
+
+const localStorageItems: ILocalStorageItem[] = [
+  { key: "favoriteQuotes", action: addToFavorites },
+  { key: "stoppedQuotes", action: addToStopped },
+  { key: "deletedQuotes", action: addToDeleted },
+];
 
 const App: FC = () => {
   const dispatch = useDispatch();
@@ -22,20 +29,12 @@ const App: FC = () => {
   });
 
   useEffect(() => {
-    const favorites = localStorage.getItem("favoriteQuotes");
-    if (favorites && favorites.length > 0) {
-      dispatch(addToFavorites(JSON.parse(favorites) as string[]));
-    }
-
-    const stoppedQuotes = localStorage.getItem("stoppedQuotes");
-    if (stoppedQuotes && stoppedQuotes.length > 0) {
-      dispatch(addToStopped(JSON.parse(stoppedQuotes) as string[]));
-    }
-
-    const deletedQuotes = localStorage.getItem("deletedQuotes");
-    if (deletedQuotes && deletedQuotes.length > 0) {
-      dispatch(addToDeleted(JSON.parse(deletedQuotes) as string[]));
-    }
+    localStorageItems.forEach(({ key, action }) => {
+      const item = localStorage.getItem(key);
+      if (item && item.length > 0) {
+        dispatch(action(JSON.parse(item) as string[]));
+      }
+    });
   }, [dispatch]);
 
   return (

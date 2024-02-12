@@ -1,1 +1,1 @@
-# App that displays price tickers data in realtime
+# Client Finance App

@@ -1,5 +1,5 @@
 export const contentStyle: React.CSSProperties = {
-  height: "100%",
+  height: "100vh",
   backgroundColor: "transparent",
   paddingRight: "16px",
   paddingLeft: "32px",
