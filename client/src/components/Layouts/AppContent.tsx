@@ -32,7 +32,7 @@ export const AppContent: FC = () => {
       <Typography.Title level={5} style={timeStyle}>
         Last trade time: {time}
       </Typography.Title>
-      <Flex style={wrapperStyle}>
+      <Flex style={wrapperStyle} data-testid="quote-card">
         {filteredQuotes &&
           filteredQuotes.map((quote: IQuote) => (
             <QuoteCard quote={quote} key={quote.ticker} />

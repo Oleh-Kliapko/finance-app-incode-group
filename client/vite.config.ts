@@ -7,9 +7,9 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: "happy-dom",
-    setupFiles: ".vitest/setup",
-    include: ["**/tests/**.test.{ts,tsx}"],
+    environment: "jsdom",
+    setupFiles: "./.vitest/setup.ts",
+    // include: ["**/tests/**.test.{ts,tsx}"],
   },
   resolve: {
     alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
